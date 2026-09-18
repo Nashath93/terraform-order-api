@@ -1,29 +1,20 @@
 terraform {
-    required_providers {
-        aws = {
-            source = "hashicorp/aws"
-            version = "~> 6.0"
-        }
+  required_providers {
+    aws = {
+      source  = "hashicorp/aws"
+      version = "~> 6.0"
     }
+  }
 }
 
 provider "aws" {
-    region = "ap-southeast-2"
+  region = var.aws_region
 }
 
-resource "aws_dynamodb_table" "orders" {
-    name = "terraform-orders-lab"
-    billing_mode = "PAY_PER_REQUEST"
-    hash_key = "OrderID"
+module "dynamodb" {
+  source = "./modules/dynamodb"
 
-    attribute {
-        name = "OrderID"
-        type = "S"
-    }
-
-    tags = {
-        Project = "TerraformLearning"
-        Environment = "Lab"
-        Owner = "CloudEngineering"
-    }
+  table_name  = var.table_name
+  environment = var.environment
+  owner       = var.owner
 }
